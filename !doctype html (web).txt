@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hezal Pharma</title>
+<style>
+:root {
+  --green-900: #1f3d2b;
+  --green-700: #2f6b45;
+  --green-600: #3a8455;
+  --green-100: #e7f2ea;
+  --sand-50: #faf8f3;
+  --ink: #24291f;
+  --muted: #6b7368;
+  --danger: #b3432b;
+  --radius: 12px;
+  --shadow: 0 2px 10px rgba(31, 61, 43, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--sand-50);
+  line-height: 1.5;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* Header */
+.site-header {
+  background: #fff;
+  border-bottom: 1px solid #e7e2d6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.site-header__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--green-900);
+  cursor: pointer;
+}
+.brand span { color: var(--green-600); }
+.nav { display: flex; align-items: center; gap: 24px; }
+.nav a {
+  font-weight: 500;
+  color: var(--muted);
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+.nav a:hover, .nav a.active {
+  color: var(--green-700);
+  border-bottom-color: var(--green-600);
+}
+.nav__cart { position: relative; display: inline-flex; align-items: center; gap: 6px; }
+.badge {
+  background: var(--green-600);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 1px 7px;
+  line-height: 1.4;
+}
+
+/* Hero */
+.hero {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 64px 20px;
+  text-align: center;
+}
+.hero h1 { font-size: 2.4rem; color: var(--green-900); margin-bottom: 8px; }
+.hero p { color: var(--muted); font-size: 1.1rem; margin-bottom: 24px; }
+
+/* Sections / layout */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+.section h1 { color: var(--green-900); margin-bottom: 24px; }
+.section h2 { color: var(--green-900); margin: 24px 0 16px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* Cards */
+.card {
+  background: #fff;
+  border: 1px solid #e7e2d6;
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+.card h3 { margin: 0 0 6px; color: var(--green-900); font-size: 1.05rem; }
+.card p { margin: 0 0 8px; color: var(--muted); font-size: 0.92rem; }
+.price { color: var(--green-700); font-weight: 700; font-size: 1.05rem; }
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  background: var(--green-600);
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+.btn:hover { background: var(--green-700); }
+.btn:disabled { background: #b9c4bc; cursor: not-allowed; }
+
+button { font-family: inherit; font-size: 0.95rem; }
+
+/* Forms */
+.input, input[type="text"], input:not([type]), textarea {
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 10px 12px;
+  border: 1px solid #d8d2c2;
+  border-radius: 8px;
+  background: #fff;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+}
+form[data-checkout] input, form[data-checkout] textarea { width: 100%; }
+
+textarea { min-height: 90px; resize: vertical; }
+
+.search-form {
+  flex-direction: row;
+  max-width: 480px;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.cart-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cart-line a { color: var(--danger); font-size: 0.85rem; font-weight: 600; }
+
+.page { display: none; }
+.page.active { display: block; }
+
+.notice { color: var(--danger); margin-bottom: 12px; }
+.success { max-width: 480px; }
+.success h2 { color: var(--green-700); }
+
+@media (max-width: 560px) {
+  .site-header__inner { flex-direction: column; gap: 10px; }
+  .hero h1 { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" onclick="showPage('home')">Hezal <span>Pharma</span></a>
+    <nav class="nav">
+      <a onclick="showPage('home')" data-nav="home">Home</a>
+      <a onclick="showPage('shop')" data-nav="shop">Shop</a>
+      <a class="nav__cart" onclick="showPage('cart')" data-nav="cart">
+        Cart<span class="badge" id="cartBadge" style="display:none"></span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- HOME -->
+<section id="page-home" class="page active">
+  <div class="hero">
+    <h1>Hezal Pharma</h1>
+    <p>Ayurvedic wellness products delivered to your door.</p>
+    <button class="btn" onclick="showPage('shop')">Shop Now</button>
+  </div>
+  <div class="section">
+    <h2>Products</h2>
+    <div class="grid" id="homeGrid"></div>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section id="page-shop" class="page">
+  <main class="section">
+    <h1>Shop</h1>
+    <form class="search-form" onsubmit="return false;">
+      <input class="input" id="searchInput" placeholder="Search products" oninput="renderShop()">
+      <button class="btn" type="submit">Search</button>
+    </form>
+    <div class="grid" id="shopGrid"></div>
+  </main>
+</section>
+
+<!-- CART -->
+<section id="page-cart" class="page">
+  <main class="section">
+    <h1>Cart</h1>
+    <div id="cartItems"></div>
+    <h2>Total: ₹<span id="cartTotal">0.00</span></h2>
+    <button class="btn" id="checkoutBtn" onclick="showPage('checkout')">Checkout</button>
+    <p id="cartEmptyMsg" style="display:none;color:var(--muted)">Cart is empty</p>
+  </main>
+</section>
+
+<!-- CHECKOUT -->
+<section id="page-checkout" class="page">
+  <main class="section">
+    <h1>Checkout</h1>
+    <p class="notice" id="checkoutError" style="display:none"></p>
+    <form data-checkout onsubmit="placeOrder(event)">
+      <input required id="ckName" placeholder="Full name">
+      <input required id="ckPhone" placeholder="Phone">
+      <textarea required id="ckAddress" placeholder="Delivery address"></textarea>
+      <p>Total: ₹<span id="checkoutTotal">0.00</span></p>
+      <button class="btn" type="submit">Place COD Order</button>
+    </form>
+  </main>
+</section>
+
+<!-- ORDER SUCCESS -->
+<section id="page-success" class="page">
+  <main class="section success">
+    <h2 id="successMsg"></h2>
+    <button class="btn" onclick="showPage('home')">Continue shopping</button>
+  </main>
+</section>
+
+<script>
+// Product catalog (from database/schema.sql seed data)
+const products = [
+  { id: 1, name: 'Ashwagandha Capsules', sku: 'HP-ASH-060', description: 'Traditional Ayurvedic root extract for stress support, 60 capsules.', price: 349.00, stock: 120 },
+  { id: 2, name: 'Triphala Churna', sku: 'HP-TRI-100', description: 'Classic three-fruit blend powder for digestion, 100g.', price: 199.00, stock: 80 },
+  { id: 3, name: 'Chyawanprash', sku: 'HP-CHY-500', description: 'Herbal jam with amla and 40+ herbs, immunity support, 500g.', price: 425.00, stock: 60 },
+  { id: 4, name: 'Brahmi Tablets', sku: 'HP-BRA-060', description: 'Bacopa monnieri tablets for focus and memory, 60 tablets.', price: 279.00, stock: 90 },
+  { id: 5, name: 'Neem Face Wash', sku: 'HP-NFW-100', description: 'Purifying neem and tulsi face wash for clear skin, 100ml.', price: 149.00, stock: 150 },
+  { id: 6, name: 'Turmeric Curcumin Capsules', sku: 'HP-TUR-060', description: 'High-potency curcumin with black pepper extract, 60 capsules.', price: 399.00, stock: 100 },
+  { id: 7, name: 'Herbal Hair Oil', sku: 'HP-HHO-200', description: 'Bhringraj and amla oil blend for hair nourishment, 200ml.', price: 229.00, stock: 70 },
+  { id: 8, name: 'Giloy Tablets', sku: 'HP-GIL-060', description: 'Guduchi extract tablets to support immunity, 60 tablets.', price: 259.00, stock: 85 },
+  { id: 9, name: 'Amla Juice', sku: 'HP-AMJ-500', description: 'Cold-pressed Indian gooseberry juice, vitamin C rich, 500ml.', price: 189.00, stock: 65 },
+  { id: 10, name: 'Shatavari Powder', sku: 'HP-SHA-100', description: "Asparagus racemosus powder for women's wellness, 100g.", price: 219.00, stock: 55 },
+];
+
+// cart = { productId: quantity }, in-memory only (resets on reload — a static
+// page has no server/database to persist it, unlike the original PHP session/MySQL setup)
+let cart = {};
+let lastOrderId = 1000;
+
+function money(n) { return n.toFixed(2); }
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+  const navEl = document.querySelector(`.nav a[data-nav="${name}"]`);
+  if (navEl) navEl.classList.add('active');
+  if (name === 'shop') renderShop();
+  if (name === 'cart') renderCart();
+  if (name === 'checkout') renderCheckout();
+}
+
+function addToCart(id) {
+  cart[id] = (cart[id] || 0) + 1;
+  updateCartBadge();
+}
+
+function removeFromCart(id) {
+  delete cart[id];
+  updateCartBadge();
+  renderCart();
+}
+
+function updateCartBadge() {
+  const count = Object.values(cart).reduce((a, b) => a + b, 0);
+  const badge = document.getElementById('cartBadge');
+  if (count > 0) { badge.style.display = 'inline-block'; badge.textContent = count; }
+  else { badge.style.display = 'none'; }
+}
+
+function productCard(p, extra) {
+  return `<article class="card">
+    <h3>${p.name}</h3>
+    ${extra || `<p>${p.description}</p>`}
+    <p class="price">₹${money(p.price)}</p>
+    <button class="btn" onclick="addToCart(${p.id})">Add to Cart</button>
+  </article>`;
+}
+
+function renderHome() {
+  const latest = [...products].sort((a, b) => b.id - a.id).slice(0, 8);
+  document.getElementById('homeGrid').innerHTML = latest.map(p => productCard(p)).join('');
+}
+
+function renderShop() {
+  const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+  const list = q
+    ? products.filter(p => p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q))
+    : [...products].sort((a, b) => b.id - a.id);
+  document.getElementById('shopGrid').innerHTML = list.map(p =>
+    productCard(p, `<p>Stock: ${p.stock}</p>`)
+  ).join('');
+}
+
+function renderCart() {
+  const ids = Object.keys(cart);
+  const container = document.getElementById('cartItems');
+  const emptyMsg = document.getElementById('cartEmptyMsg');
+  const checkoutBtn = document.getElementById('checkoutBtn');
+  let total = 0;
+
+  if (ids.length === 0) {
+    container.innerHTML = '';
+    emptyMsg.style.display = 'block';
+    checkoutBtn.style.display = 'none';
+  } else {
+    emptyMsg.style.display = 'none';
+    checkoutBtn.style.display = 'inline-block';
+    container.innerHTML = ids.map(id => {
+      const p = products.find(x => x.id === Number(id));
+      const q = cart[id];
+      total += p.price * q;
+      return `<div class="card cart-line" style="margin-bottom:12px">
+        <span><b>${p.name}</b> × ${q} — ₹${money(p.price * q)}</span>
+        <a href="#" onclick="removeFromCart(${p.id});return false;">Remove</a>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('cartTotal').textContent = money(total);
+}
+
+function cartTotalValue() {
+  return Object.entries(cart).reduce((sum, [id, q]) => {
+    const p = products.find(x => x.id === Number(id));
+    return sum + p.price * q;
+  }, 0);
+}
+
+function renderCheckout() {
+  if (Object.keys(cart).length === 0) { showPage('cart'); return; }
+  document.getElementById('checkoutTotal').textContent = money(cartTotalValue());
+  document.getElementById('checkoutError').style.display = 'none';
+}
+
+function placeOrder(e) {
+  e.preventDefault();
+  const name = document.getElementById('ckName').value.trim();
+  const phone = document.getElementById('ckPhone').value.trim();
+  const address = document.getElementById('ckAddress').value.trim();
+  const errorEl = document.getElementById('checkoutError');
+
+  if (!name || !phone || !address) {
+    errorEl.textContent = 'Please fill in all fields.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  // Simulate stock check + order insert (no real database in a static page)
+  for (const [id, q] of Object.entries(cart)) {
+    const p = products.find(x => x.id === Number(id));
+    if (p.stock < q) {
+      errorEl.textContent = 'Unable to place order. Please check stock and try again.';
+      errorEl.style.display = 'block';
+      return;
+    }
+  }
+  Object.entries(cart).forEach(([id, q]) => {
+    products.find(x => x.id === Number(id)).stock -= q;
+  });
+
+  lastOrderId += 1;
+  document.getElementById('successMsg').textContent = `Order placed successfully. Order #${lastOrderId}`;
+  cart = {};
+  updateCartBadge();
+  document.getElementById('ckName').value = '';
+  document.getElementById('ckPhone').value = '';
+  document.getElementById('ckAddress').value = '';
+  showPage('success');
+}
+
+renderHome();
+</script>
+</body>
+</html>
